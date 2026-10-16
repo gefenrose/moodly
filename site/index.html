@@ -58,7 +58,32 @@
       <main id="view" class="view" tabindex="-1" aria-live="polite"></main>
 
       <footer class="app-footer">
-        הנתונים נשמרים בדפדפן הזה בלבד. להתקנה באייפון: <strong>שיתוף ← הוספה למסך הבית</strong>.
+        <div class="footer-grid">
+          <section class="footer-card" aria-labelledby="install-title">
+            <h2 id="install-title">התקנה בטלפון</h2>
+            <div class="platform-instructions">
+              <div class="platform-instruction">
+                <strong>iPhone</strong>
+                <span>פתחו ב‑Safari, לחצו על שיתוף ואז על הוספה למסך הבית.</span>
+              </div>
+              <div class="platform-instruction">
+                <strong>Android</strong>
+                <span>פתחו ב‑Chrome, לחצו על ⋮ ואז על התקנת אפליקציה או הוספה למסך הבית.</span>
+              </div>
+            </div>
+          </section>
+          <section class="footer-card" aria-labelledby="backup-title">
+            <h2 id="backup-title">גיבוי הנתונים</h2>
+            <p>הקובץ כולל את היומן, התמונות, ההרגלים, מצב הרוח והמשקל.</p>
+            <div class="backup-actions">
+              <button class="secondary-button" id="export-backup" type="button">הורדת גיבוי</button>
+              <button class="secondary-button" id="import-backup-button" type="button">ייבוא מקובץ</button>
+              <input class="sr-only" id="backup-file" type="file" accept=".json,application/json" />
+            </div>
+            <p class="backup-hint">ייבוא מוסיף רישומים ומעדכן תאריכים שכבר קיימים. רישומים מתאריכים אחרים נשארים.</p>
+          </section>
+        </div>
+        <p class="footer-privacy">הנתונים נשמרים בדפדפן הזה בלבד ואינם נשלחים לשרת. כדי להעביר אותם לטלפון אחר, הורידו גיבוי וייבאו אותו שם.</p>
       </footer>
     </div>
 
@@ -139,6 +164,6 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app.js?v=2"></script>
+    <script type="module" src="./app.js?v=3"></script>
   </body>
 </html>

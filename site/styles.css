@@ -212,8 +212,19 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .summary-strip { display: flex; align-items: center; gap: 8px; margin: -9px 0 20px; color: var(--muted); font-size: 13px; }
 .summary-strip strong { color: var(--ink); font-weight: 760; }
 
-.app-footer { padding: 24px 0 calc(26px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; text-align: center; }
-.app-footer strong { color: var(--ink); font-weight: 650; }
+.app-footer { padding: 24px 0 calc(26px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.footer-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; text-align: right; }
+.footer-card h2 { margin: 0 0 8px; color: var(--ink); font-size: 14px; font-weight: 750; }
+.footer-card p { margin: 0; }
+.platform-instructions { display: grid; gap: 10px; }
+.platform-instruction { display: grid; gap: 2px; }
+.platform-instruction strong { color: var(--ink); font-weight: 700; }
+.platform-instruction span, .backup-hint { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }
+.backup-actions .secondary-button { min-height: 38px; padding: 0 12px; font-size: 12px; }
+.backup-hint { margin-top: 10px !important; }
+.footer-privacy { margin: 13px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
 
 .dialog {
   width: min(100% - 32px, 530px);
@@ -331,7 +342,9 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   .progress-track { width: 84px; }
   .weight-entry { flex-direction: column; align-items: stretch; gap: 15px; padding: 15px; }
   .weight-entry .primary-button { width: 100%; }
-  .app-footer { padding: 18px 0 calc(78px + env(safe-area-inset-bottom)); font-size: 10px; }
+  .app-footer { padding: 18px 0 calc(78px + env(safe-area-inset-bottom)); font-size: 11px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 10px; }
+  .footer-card { padding: 14px; }
   .dialog { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); border-right: 0; border-bottom: 0; border-left: 0; border-radius: 18px 18px 0 0; }
   .small-dialog { max-width: none; }
   .dialog-header h2 { font-size: 20px; }
