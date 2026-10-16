@@ -23,6 +23,7 @@ const entryDialog = document.querySelector("#entry-dialog");
 const habitDialog = document.querySelector("#habit-dialog");
 const entryForm = document.querySelector("#entry-form");
 const habitForm = document.querySelector("#habit-form");
+const backupInput = document.querySelector("#backup-file");
 
 function toLocalDateString(date) {
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
@@ -79,6 +80,167 @@ async function dbRequest(storeName, method, value) {
     transaction.onabort = () => reject(transaction.error || new Error("הפעולה בוטלה."));
     transaction.oncomplete = () => database.close();
   });
+}
+
+async function blobToBase64(blob) {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+  return btoa(binary);
+}
+
+function validBackupDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function photoFromBase64(photo) {
+  if (!validBackupDate(photo.date) || typeof photo.data !== "string" || !photo.data.length || photo.data.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(photo.data)) {
+    throw new Error("קובץ הגיבוי מכיל תמונה לא תקינה.");
+  }
+  const type = typeof photo.type === "string" && /^image\/(jpeg|png|webp|gif)$/i.test(photo.type) ? photo.type : "image/jpeg";
+  let binary;
+  try {
+    binary = atob(photo.data);
+  } catch {
+    throw new Error("קובץ הגיבוי מכיל תמונה לא תקינה.");
+  }
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  return { date: photo.date, blob: new Blob([bytes], { type }) };
+}
+
+function validateBackup(data) {
+  if (!data || data.format !== "shura-bayom-backup" || data.version !== 1 || !Array.isArray(data.records) || !Array.isArray(data.habits) || !Array.isArray(data.photos)) {
+    throw new Error("זה לא קובץ גיבוי תקין של שורה ביום.");
+  }
+
+  const habits = data.habits.map((habit) => {
+    if (!habit || typeof habit.id !== "string" || !habit.id || typeof habit.name !== "string" || !habit.name.trim()) {
+      throw new Error("קובץ הגיבוי מכיל הרגל לא תקין.");
+    }
+    return { id: habit.id, name: habit.name.trim().slice(0, 60) };
+  });
+
+  const photos = data.photos.map(photoFromBase64);
+  const photoDates = new Set(photos.map((photo) => photo.date));
+  if (photoDates.size !== photos.length) throw new Error("קובץ הגיבוי מכיל תמונות כפולות.");
+
+  const records = data.records.map((record) => {
+    if (!record || !validBackupDate(record.date) || typeof record.note !== "string") {
+      throw new Error("קובץ הגיבוי מכיל רישום יומי לא תקין.");
+    }
+    const low = record.moodLow ?? null;
+    const high = record.moodHigh ?? null;
+    const hasMood = low !== null || high !== null;
+    if (hasMood && (!Number.isInteger(low) || low < 1 || low > 10 || !Number.isInteger(high) || high < 1 || high > 10)) {
+      throw new Error("קובץ הגיבוי מכיל דירוג מצב רוח לא תקין.");
+    }
+    const weightKg = record.weightKg ?? null;
+    if (weightKg !== null && (!Number.isFinite(Number(weightKg)) || Number(weightKg) <= 0 || Number(weightKg) >= 1000)) {
+      throw new Error("קובץ הגיבוי מכיל רישום משקל לא תקין.");
+    }
+    if (record.checkedHabits !== undefined && (!Array.isArray(record.checkedHabits) || record.checkedHabits.some((id) => typeof id !== "string"))) {
+      throw new Error("קובץ הגיבוי מכיל מעקב הרגלים לא תקין.");
+    }
+    const hasPhoto = photoDates.has(record.date);
+    if (Boolean(record.hasPhoto) !== hasPhoto) throw new Error("קובץ הגיבוי אינו שלם: חסרה תמונה של אחד הרישומים.");
+    return {
+      date: record.date,
+      note: record.note.slice(0, 180),
+      moodLow: hasMood ? Math.min(low, high) : null,
+      moodHigh: hasMood ? Math.max(low, high) : null,
+      weightKg: weightKg === null ? null : Math.round(Number(weightKg) * 10) / 10,
+      checkedHabits: record.checkedHabits || [],
+      hasPhoto,
+    };
+  });
+
+  const recordDates = new Set(records.map((record) => record.date));
+  if (recordDates.size !== records.length || photos.some((photo) => !recordDates.has(photo.date))) {
+    throw new Error("קובץ הגיבוי מכיל תאריכים כפולים או תמונה ללא רישום.");
+  }
+  return { records, habits, photos };
+}
+
+async function exportBackup() {
+  const [records, habits, photos] = await Promise.all([
+    dbRequest("records", "getAll"),
+    dbRequest("habits", "getAll"),
+    dbRequest("photos", "getAll"),
+  ]);
+  const photoDates = new Set(photos.map((photo) => photo.date));
+  const backup = {
+    format: "shura-bayom-backup",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    records: records.map((record) => ({ ...record, hasPhoto: photoDates.has(record.date) })),
+    habits,
+    photos: await Promise.all(photos.map(async ({ date, blob }) => ({
+      date,
+      type: blob.type || "image/jpeg",
+      data: await blobToBase64(blob),
+    }))),
+  };
+  const file = new Blob([JSON.stringify(backup)], { type: "application/json" });
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `shura-bayom-backup-${today}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  showToast("קובץ הגיבוי ירד למכשיר");
+}
+
+async function writeBackupToDatabase(backup) {
+  const database = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(STORE_NAMES, "readwrite");
+    const recordsStore = transaction.objectStore("records");
+    const habitsStore = transaction.objectStore("habits");
+    const photosStore = transaction.objectStore("photos");
+    backup.records.forEach((record) => recordsStore.put(record));
+    backup.habits.forEach((habit) => habitsStore.put(habit));
+    backup.records.filter((record) => !record.hasPhoto).forEach((record) => photosStore.delete(record.date));
+    backup.photos.forEach((photo) => photosStore.put(photo));
+    transaction.oncomplete = () => {
+      database.close();
+      resolve();
+    };
+    transaction.onabort = () => {
+      database.close();
+      reject(transaction.error || new Error("לא ניתן לייבא את הגיבוי."));
+    };
+    transaction.onerror = () => {
+      database.close();
+      reject(transaction.error || new Error("לא ניתן לייבא את הגיבוי."));
+    };
+  });
+}
+
+async function importBackupFile(file) {
+  if (!file) return;
+  let backup;
+  try {
+    backup = validateBackup(JSON.parse(await file.text()));
+  } catch (error) {
+    if (error instanceof SyntaxError) throw new Error("לא ניתן לקרוא את הקובץ. בחרו קובץ גיבוי JSON של שורה ביום.");
+    throw error;
+  }
+  const accepted = window.confirm("הייבוא יוסיף רישומים חדשים ויחליף רישומים באותם תאריכים, כולל תמונות. נתונים מתאריכים אחרים יישארו. להמשיך?");
+  if (!accepted) return;
+  await writeBackupToDatabase(backup);
+  for (const url of state.photoURLs.values()) URL.revokeObjectURL(url);
+  state.photoURLs.clear();
+  await loadData();
+  await render();
+  showToast(`הגיבוי יובא: ${backup.records.length} רישומים`);
 }
 
 async function loadData() {
@@ -485,6 +647,8 @@ document.addEventListener("click", (event) => {
   }
   if (event.target.closest("#header-add")) showEntryEditor(today).catch(reportError);
   if (event.target.closest("#add-selected")) showEntryEditor(state.selectedDate).catch(reportError);
+  if (event.target.closest("#export-backup")) exportBackup().catch(reportError);
+  if (event.target.closest("#import-backup-button")) backupInput.click();
   if (event.target.closest("#close-entry, #cancel-entry")) entryDialog.close();
   if (event.target.closest("#close-habit, #cancel-habit")) habitDialog.close();
   if (event.target.closest("#remove-photo")) {
@@ -538,6 +702,10 @@ document.addEventListener("change", (event) => {
       updatePhotoPreview(blob);
       target.value = "";
     }).catch(reportError);
+  }
+  if (target.matches("#backup-file")) {
+    const [file] = target.files || [];
+    importBackupFile(file).catch(reportError).finally(() => { target.value = ""; });
   }
 });
 

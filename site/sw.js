@@ -1,9 +1,9 @@
-const CACHE = "shura-bayom-v3";
+const CACHE = "shura-bayom-v4";
 const APP_FILES = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app.js?v=2",
+  "./app.js?v=3",
   "./manifest.webmanifest",
   "./icons/app-icon.svg",
   "./icons/icon-192.png",
