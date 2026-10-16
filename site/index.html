@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="שורה ביום" />
+    <meta name="description" content="יומן אישי בעברית: שורה אחת, תמונה ומעקב יומי אחר מצב רוח, הרגלים ומשקל." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>שורה ביום — יומן אישי</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <a class="brand" href="#journal" aria-label="שורה ביום, יומן אישי">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36" fill="none">
+              <rect x="1" y="1" width="34" height="34" rx="10" fill="currentColor" />
+              <path d="M10 13h16M10 18h11M10 23h8" stroke="white" stroke-width="2.2" stroke-linecap="round" />
+              <circle cx="26" cy="23" r="2.2" fill="#557A59" />
+            </svg>
+          </span>
+          <span class="brand-name">שורה ביום</span>
+        </a>
+        <div class="header-actions">
+          <span class="local-note"><span class="local-dot" aria-hidden="true"></span>נשמר במכשיר</span>
+          <button class="primary-button header-add" id="header-add" type="button">
+            <span aria-hidden="true">＋</span><span>שורה להיום</span>
+          </button>
+        </div>
+      </header>
+
+      <nav class="tab-nav" aria-label="ניווט ראשי">
+        <button class="tab-button is-active" type="button" data-tab="journal" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.75h10a2 2 0 0 1 2 2v12.5H7a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2Z"/><path d="M5 8h14M9 12h7M9 15.5h5"/></svg>
+          <span>יומן</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="trends">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.25h15M6.5 16l4-4 3 2.5 5-6"/><path d="M15.5 8.5h3v3"/></svg>
+          <span>מגמות</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="habits">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.2 2.3 2.3 4.8-5"/></svg>
+          <span>הרגלים</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="weight">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5h10a2 2 0 0 1 2 2v11H5v-11a2 2 0 0 1 2-2Z"/><path d="M9 9.5a3 3 0 0 1 6 0M12 9.5l1.5 2"/></svg>
+          <span>משקל</span>
+        </button>
+      </nav>
+
+      <main id="view" class="view" tabindex="-1" aria-live="polite"></main>
+
+      <footer class="app-footer">
+        הנתונים נשמרים בדפדפן הזה בלבד. להתקנה באייפון: <strong>שיתוף ← הוספה למסך הבית</strong>.
+      </footer>
+    </div>
+
+    <dialog class="dialog" id="entry-dialog" aria-labelledby="entry-title">
+      <form id="entry-form" class="dialog-form">
+        <div class="dialog-header">
+          <div>
+            <p class="dialog-date" id="entry-date-label"></p>
+            <h2 id="entry-title">רישום יומי</h2>
+          </div>
+          <button class="icon-button" id="close-entry" type="button" aria-label="סגירה">×</button>
+        </div>
+
+        <label class="field-label" for="entry-date">תאריך</label>
+        <input class="text-input date-input" id="entry-date" type="date" required />
+
+        <label class="field-label" for="entry-note">שורה אחת מהיום</label>
+        <textarea class="text-input note-input" id="entry-note" rows="3" maxlength="180" placeholder="מה תרצו לזכור מהיום?" dir="rtl"></textarea>
+        <div class="field-hint"><span>אפשר גם לכתוב רק כמה מילים.</span><span id="note-count">0/180</span></div>
+
+        <div class="field-group">
+          <span class="field-label">תמונה</span>
+          <div class="photo-control" id="photo-control">
+            <div class="photo-preview" id="photo-preview" hidden></div>
+            <label class="secondary-button photo-pick" for="photo-input">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8.5h3l1.4-2h6.2l1.4 2h3a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18v-8a1.5 1.5 0 0 1 1.5-1.5Z"/><circle cx="12" cy="13.5" r="3.2"/></svg>
+              <span id="photo-button-label">בחירת תמונה</span>
+            </label>
+            <button class="text-button remove-photo" id="remove-photo" type="button" hidden>הסרת תמונה</button>
+            <input id="photo-input" type="file" accept="image/*" hidden />
+          </div>
+        </div>
+
+        <div class="mood-toggle-row">
+          <div>
+            <span class="field-label">טווח מצב הרוח</span>
+            <span class="field-hint">הנמוך והגבוה ביותר באותו היום</span>
+          </div>
+          <label class="switch" aria-label="הפעלת מעקב מצב רוח">
+            <input id="mood-enabled" type="checkbox" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
+
+        <fieldset class="mood-fields" id="mood-fields" disabled>
+          <label class="range-field range-low" for="mood-low">
+            <span class="range-heading"><span>המצב הנמוך ביותר</span><output id="mood-low-value" for="mood-low">3</output></span>
+            <input id="mood-low" type="range" min="1" max="10" value="3" />
+          </label>
+          <label class="range-field range-high" for="mood-high">
+            <span class="range-heading"><span>המצב הגבוה ביותר</span><output id="mood-high-value" for="mood-high">7</output></span>
+            <input id="mood-high" type="range" min="1" max="10" value="7" />
+          </label>
+          <p class="mood-scale">סולם אישי: 1 נמוך מאוד · 10 גבוה מאוד</p>
+        </fieldset>
+        <p class="privacy-copy">המעקב הוא אישי ונשמר במכשיר. הוא אינו מחליף ייעוץ מקצועי.</p>
+
+        <div class="dialog-actions">
+          <button class="secondary-button" id="cancel-entry" type="button">ביטול</button>
+          <button class="primary-button" type="submit">שמירת היום</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="dialog small-dialog" id="habit-dialog" aria-labelledby="habit-title">
+      <form id="habit-form" class="dialog-form">
+        <div class="dialog-header">
+          <div><p class="dialog-date">הרגל קטן ליום יום</p><h2 id="habit-title">הרגל חדש</h2></div>
+          <button class="icon-button" id="close-habit" type="button" aria-label="סגירה">×</button>
+        </div>
+        <label class="field-label" for="habit-name">שם ההרגל</label>
+        <input class="text-input" id="habit-name" maxlength="60" placeholder="לדוגמה: לצאת להליכה" required />
+        <div class="dialog-actions">
+          <button class="secondary-button" id="cancel-habit" type="button">ביטול</button>
+          <button class="primary-button" type="submit">הוספת הרגל</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js?v=2"></script>
+  </body>
+</html>
