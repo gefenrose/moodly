@@ -290,15 +290,15 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 }
 
 @media (max-width: 600px) {
-  body { font-size: 14px; }
+  body { font-size: 16px; }
   .app-shell { width: 100%; padding: 0 20px; }
-  .app-header { min-height: 65px; gap: 10px; }
+  .app-header { min-height: 70px; gap: 10px; }
   .brand { gap: 8px; }
   .brand-mark { width: 32px; height: 32px; }
-  .brand-name { font-size: 17px; }
+  .brand-name { font-size: 18px; }
   .header-actions { gap: 10px; }
-  .local-note { font-size: 10px; gap: 5px; }
-  .header-add { min-height: 38px; padding: 0 11px; font-size: 12px; }
+  .local-note { font-size: 12px; gap: 5px; }
+  .header-add { min-height: 42px; padding: 0 12px; font-size: 14px; }
   .header-add > span:first-child { font-size: 16px; }
   .tab-nav {
     position: fixed;
@@ -306,7 +306,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
     right: 0;
     bottom: 0;
     left: 0;
-    height: calc(62px + env(safe-area-inset-bottom));
+    height: calc(68px + env(safe-area-inset-bottom));
     justify-content: space-around;
     gap: 2px;
     padding: 5px 12px calc(5px + env(safe-area-inset-bottom));
@@ -315,36 +315,57 @@ button:disabled { cursor: not-allowed; opacity: .55; }
     background: rgba(255,255,255,.97);
     backdrop-filter: blur(18px);
   }
-  .tab-button { width: 25%; min-width: 0; height: 100%; flex-direction: column; gap: 3px; font-size: 10px; font-weight: 620; }
+  .tab-button { width: 25%; min-width: 0; height: 100%; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 620; }
   .tab-button svg { width: 20px; height: 20px; }
   .tab-button.is-active::after { right: 24%; left: 24%; bottom: auto; top: -6px; height: 2px; }
   .view { min-height: 58vh; padding: 27px 0 28px; }
   .page-heading { align-items: flex-start; margin-bottom: 21px; }
   .page-heading h1 { font-size: 31px; }
-  .page-heading p { max-width: 230px; font-size: 13px; }
+  .page-heading p { max-width: 270px; font-size: 16px; line-height: 1.5; }
   .heading-actions { align-self: flex-end; }
-  .date-control { gap: 5px; min-height: 37px; padding: 0 8px; font-size: 10px; }
-  .date-control input { max-width: 116px; font-size: 12px; }
+  .date-control { gap: 6px; min-height: 42px; padding: 0 10px; font-size: 13px; }
+  .date-control input { max-width: 116px; font-size: 14px; }
   .journal-toolbar { gap: 8px; padding-bottom: 15px; }
-  .journal-toolbar .primary-button { padding: 0 11px; font-size: 12px; }
-  .entry-row { min-height: 78px; gap: 11px; padding: 12px 0; }
-  .entry-date { width: 86px; flex-basis: 86px; font-size: 10px; }
-  .entry-note { font-size: 13px; }
+  .journal-toolbar .primary-button { min-height: 42px; padding: 0 12px; font-size: 14px; }
+  .entry-row { min-height: 82px; gap: 11px; padding: 13px 0; }
+  .entry-date { width: 92px; flex-basis: 92px; font-size: 13px; }
+  .entry-note { font-size: 16px; }
   .entry-thumb { width: 50px; height: 50px; flex-basis: 50px; }
   .entry-chevron { width: 14px; height: 14px; flex-basis: 14px; }
-  .mood-chip, .weight-chip { padding: 3px 5px; font-size: 9px; }
+  .mood-chip, .weight-chip { padding: 4px 7px; font-size: 12px; }
   .section-heading { margin-top: 27px; }
   .chart-section { margin-top: 24px; }
   .chart-section + .chart-section { margin-top: 34px; padding-top: 24px; }
-  .chart-heading h2 { font-size: 16px; }
-  .chart-svg text { font-size: 10px; }
-  .chart-legend { gap: 11px; font-size: 11px; }
+  .chart-heading { gap: 10px; margin-bottom: 11px; }
+  .chart-heading h2 { font-size: 19px; }
+  .chart-heading p { font-size: 15px; line-height: 1.45; }
+  .count-label { font-size: 14px; white-space: nowrap; }
+  .chart-svg text { font-size: 34px; }
+  .chart-legend { flex-wrap: wrap; gap: 9px 14px; margin-top: 15px; font-size: 15px; }
+  .legend-key { gap: 8px; }
+  .legend-line { width: 20px; height: 4px; }
+  .metric-row time, .metric-value { font-size: 16px; }
+  .section-heading h2 { font-size: 20px; }
+  .section-heading p, .count-label { font-size: 15px; }
+  .progress-copy, .habit-name, .habit-empty { font-size: 16px; }
+  .summary-strip { font-size: 15px; }
+  .weight-unit { font-size: 16px; }
+  .empty-state p, .chart-empty { font-size: 16px; }
+  .text-button, .field-label, .mood-scale, .privacy-copy { font-size: 14px; }
+  .text-input { font-size: 16px; }
+  .field-hint { font-size: 13px; }
   .progress-track { width: 84px; }
   .weight-entry { flex-direction: column; align-items: stretch; gap: 15px; padding: 15px; }
   .weight-entry .primary-button { width: 100%; }
-  .app-footer { padding: 18px 0 calc(78px + env(safe-area-inset-bottom)); font-size: 11px; }
+  .app-footer { padding: 20px 0 calc(82px + env(safe-area-inset-bottom)); font-size: 14px; }
   .footer-grid { grid-template-columns: 1fr; gap: 10px; }
-  .footer-card { padding: 14px; }
+  .footer-card { padding: 16px; }
+  .footer-card h2 { font-size: 17px; }
+  .platform-instruction { gap: 4px; }
+  .platform-instruction strong, .footer-card p { font-size: 14px; line-height: 1.5; }
+  .platform-instruction span, .backup-hint, .footer-privacy { font-size: 13px; line-height: 1.55; }
+  .backup-actions .secondary-button { min-height: 42px; font-size: 14px; }
+  .footer-privacy { margin-top: 16px; }
   .dialog { width: 100%; max-width: none; max-height: 92dvh; margin: auto 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); border-right: 0; border-bottom: 0; border-left: 0; border-radius: 18px 18px 0 0; }
   .small-dialog { max-width: none; }
   .dialog-header h2 { font-size: 20px; }
@@ -353,7 +374,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 @media (max-width: 370px) {
   .app-shell { padding-right: 15px; padding-left: 15px; }
   .local-note { display: none; }
-  .entry-date { width: 75px; flex-basis: 75px; }
+  .entry-date { width: 80px; flex-basis: 80px; }
   .entry-row { gap: 8px; }
   .entry-thumb { width: 44px; height: 44px; flex-basis: 44px; }
 }
