@@ -349,17 +349,17 @@ function chartGrid(width, height, left, right, top, bottom, values) {
   return values.map((value) => {
     const y = top + ((10 - value) / 9) * plotHeight;
     return `<line class="chart-grid" x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}" />
-      <text x="${left - 9}" y="${(y + 4).toFixed(1)}" text-anchor="end">${value}</text>`;
+      <text x="${left - 9}" y="${(y + 7).toFixed(1)}" text-anchor="end">${value}</text>`;
   }).join("");
 }
 
 function moodChart(records) {
   const width = 720;
-  const height = 245;
-  const left = 37;
+  const height = 260;
+  const left = 60;
   const right = 12;
   const top = 15;
-  const bottom = 31;
+  const bottom = 43;
   const plotWidth = width - left - right;
   const plotHeight = height - top - bottom;
   const lastIndex = Math.max(1, records.length - 1);
@@ -372,7 +372,7 @@ function moodChart(records) {
   const points = records.map((record, index) => `<circle class="chart-point-low" cx="${x(index).toFixed(1)}" cy="${y(record.moodLow).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: נמוך ${record.moodLow}</title></circle>
       <circle class="chart-point-high" cx="${x(index).toFixed(1)}" cy="${y(record.moodHigh).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: גבוה ${record.moodHigh}</title></circle>`).join("");
   const xLabels = [...new Set([0, Math.floor((records.length - 1) / 2), records.length - 1])].map((index) =>
-    `<text x="${x(index).toFixed(1)}" y="${height - 8}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
+    `<text x="${x(index).toFixed(1)}" y="${height - 6}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="תרשים טווח מצב רוח יומי">
     <title>המצב הנמוך והגבוה ביותר בכל יום</title>
     ${chartGrid(width, height, left, right, top, bottom, [10, 5, 1])}
@@ -385,11 +385,11 @@ function moodChart(records) {
 
 function weightChart(records) {
   const width = 720;
-  const height = 220;
-  const left = 50;
+  const height = 235;
+  const left = 64;
   const right = 12;
   const top = 18;
-  const bottom = 31;
+  const bottom = 43;
   const weights = records.map((record) => Number(record.weightKg));
   const minValue = Math.floor(Math.min(...weights) - 1);
   const maxValue = Math.ceil(Math.max(...weights) + 1);
@@ -406,11 +406,11 @@ function weightChart(records) {
   const grid = [upper, (upper + lower) / 2, lower].map((value) => {
     const gy = y(value);
     return `<line class="chart-grid" x1="${left}" y1="${gy.toFixed(1)}" x2="${width - right}" y2="${gy.toFixed(1)}" />
-      <text x="${left - 10}" y="${(gy + 4).toFixed(1)}" text-anchor="end">${value.toFixed(value % 1 ? 1 : 0)}</text>`;
+      <text x="${left - 10}" y="${(gy + 7).toFixed(1)}" text-anchor="end">${value.toFixed(value % 1 ? 1 : 0)}</text>`;
   }).join("");
   const dots = records.map((record, index) => `<circle class="chart-point-low" cx="${x(index).toFixed(1)}" cy="${y(Number(record.weightKg)).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: ${Number(record.weightKg).toFixed(1)} ק״ג</title></circle>`).join("");
   const labels = [...new Set([0, Math.floor((records.length - 1) / 2), records.length - 1])].map((index) =>
-    `<text x="${x(index).toFixed(1)}" y="${height - 8}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
+    `<text x="${x(index).toFixed(1)}" y="${height - 6}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="תרשים משקל לאורך זמן">
     <title>משקל לאורך זמן בקילוגרמים</title>${grid}<path class="chart-low" d="${path}" />${dots}${labels}
   </svg>`;
