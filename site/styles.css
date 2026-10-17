@@ -234,7 +234,8 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   max-width: 530px;
   max-height: min(90dvh, 820px);
   padding: 25px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--white);
@@ -243,15 +244,15 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 }
 .dialog::backdrop { background: rgba(0, 0, 0, .34); backdrop-filter: blur(2px); }
 .small-dialog { max-width: 430px; }
-.dialog-form { display: flex; flex-direction: column; gap: 10px; }
+.dialog-form { display: flex; flex-direction: column; gap: 10px; width: 100%; min-width: 0; }
 .dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
 .dialog-header h2 { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 760; letter-spacing: -.035em; }
 .dialog-date { margin: 0 0 4px; color: var(--muted); font-size: 12px; }
 .field-label { display: block; margin: 5px 0 2px; color: var(--ink); font-size: 13px; font-weight: 700; }
 .field-hint { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
-.text-input { width: 100%; min-height: 43px; padding: 10px 12px; border: 1px solid #dcdcdc; border-radius: 9px; background: var(--white); color: var(--ink); font-size: 14px; }
+.text-input { width: 100%; min-width: 0; max-width: 100%; min-height: 43px; padding: 10px 12px; border: 1px solid #dcdcdc; border-radius: 9px; background: var(--white); color: var(--ink); font-size: 14px; }
 .text-input:focus { border-color: var(--ink); outline: 2px solid rgba(17, 17, 17, .08); }
-.date-input { direction: ltr; text-align: right; }
+.date-input { display: block; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; direction: ltr; text-align: right; }
 .note-input { min-height: 82px; resize: vertical; line-height: 1.55; }
 .field-group { display: flex; flex-direction: column; gap: 7px; margin-top: 3px; }
 .photo-control { display: flex; align-items: center; gap: 12px; min-height: 46px; }
