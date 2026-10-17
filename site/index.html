@@ -12,10 +12,11 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icons/app-icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=6" />
+    <link rel="stylesheet" href="./styles.css?v=7" />
     <title>שורה ביום — יומן אישי</title>
   </head>
   <body>
+    <div class="statusbar-background" aria-hidden="true"></div>
     <div class="app-shell">
       <header class="app-header">
         <a class="brand" href="#journal" aria-label="שורה ביום, יומן אישי">
@@ -98,7 +99,11 @@
         </div>
 
         <label class="field-label" for="entry-date">תאריך</label>
-        <input class="text-input date-input" id="entry-date" type="date" required />
+        <div class="text-input date-picker-control">
+          <span class="date-picker-value" id="entry-date-display" aria-hidden="true"></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4M16 4v4M4 10h16"/></svg>
+          <input class="date-input" id="entry-date" type="date" aria-label="תאריך" required />
+        </div>
 
         <label class="field-label" for="entry-note">שורה אחת מהיום</label>
         <textarea class="text-input note-input" id="entry-note" rows="3" maxlength="180" placeholder="מה תרצו לזכור מהיום?" dir="rtl"></textarea>
@@ -164,6 +169,6 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app.js?v=8"></script>
+    <script type="module" src="./app.js?v=9"></script>
   </body>
 </html>

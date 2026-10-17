@@ -488,6 +488,7 @@ async function loadEntryEditor(date) {
   const record = recordFor(date);
   document.querySelector("#entry-date").value = date;
   document.querySelector("#entry-date").max = today;
+  document.querySelector("#entry-date-display").textContent = formatLongDate(date);
   document.querySelector("#entry-date-label").textContent = formatLongDate(date);
   document.querySelector("#entry-note").value = record.note || "";
   document.querySelector("#note-count").textContent = `${(record.note || "").length}/180`;
@@ -753,7 +754,7 @@ async function start() {
       const currentWorkerURL = navigator.serviceWorker.controller?.scriptURL;
       if (previousWorkerURL && currentWorkerURL !== previousWorkerURL) window.location.reload();
     }, { once: true });
-    navigator.serviceWorker.register("./sw.js?v=14", { updateViaCache: "none" })
+    navigator.serviceWorker.register("./sw.js?v=15", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch((error) => console.warn("Offline setup failed", error));
   }
