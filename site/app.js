@@ -357,9 +357,9 @@ function moodChart(records) {
   const width = 720;
   const height = 260;
   const left = 60;
-  const right = 12;
+  const right = 60;
   const top = 15;
-  const bottom = 43;
+  const bottom = 52;
   const plotWidth = width - left - right;
   const plotHeight = height - top - bottom;
   const lastIndex = Math.max(1, records.length - 1);
@@ -372,7 +372,7 @@ function moodChart(records) {
   const points = records.map((record, index) => `<circle class="chart-point-low" cx="${x(index).toFixed(1)}" cy="${y(record.moodLow).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: נמוך ${record.moodLow}</title></circle>
       <circle class="chart-point-high" cx="${x(index).toFixed(1)}" cy="${y(record.moodHigh).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: גבוה ${record.moodHigh}</title></circle>`).join("");
   const xLabels = [...new Set([0, Math.floor((records.length - 1) / 2), records.length - 1])].map((index) =>
-    `<text x="${x(index).toFixed(1)}" y="${height - 6}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
+    `<text x="${x(index).toFixed(1)}" y="${height - 10}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="תרשים טווח מצב רוח יומי">
     <title>המצב הנמוך והגבוה ביותר בכל יום</title>
     ${chartGrid(width, height, left, right, top, bottom, [10, 5, 1])}
@@ -387,9 +387,9 @@ function weightChart(records) {
   const width = 720;
   const height = 235;
   const left = 64;
-  const right = 12;
+  const right = 60;
   const top = 18;
-  const bottom = 43;
+  const bottom = 52;
   const weights = records.map((record) => Number(record.weightKg));
   const minValue = Math.floor(Math.min(...weights) - 1);
   const maxValue = Math.ceil(Math.max(...weights) + 1);
@@ -410,7 +410,7 @@ function weightChart(records) {
   }).join("");
   const dots = records.map((record, index) => `<circle class="chart-point-low" cx="${x(index).toFixed(1)}" cy="${y(Number(record.weightKg)).toFixed(1)}" r="3.5"><title>${escapeHTML(formatLongDate(record.date))}: ${Number(record.weightKg).toFixed(1)} ק״ג</title></circle>`).join("");
   const labels = [...new Set([0, Math.floor((records.length - 1) / 2), records.length - 1])].map((index) =>
-    `<text x="${x(index).toFixed(1)}" y="${height - 6}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
+    `<text x="${x(index).toFixed(1)}" y="${height - 10}" text-anchor="middle">${escapeHTML(formatShortDate(records[index].date))}</text>`).join("");
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="תרשים משקל לאורך זמן">
     <title>משקל לאורך זמן בקילוגרמים</title>${grid}<path class="chart-low" d="${path}" />${dots}${labels}
   </svg>`;
