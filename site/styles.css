@@ -21,6 +21,15 @@
 
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--white); }
+body::before {
+  position: fixed;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: max(1px, env(safe-area-inset-top));
+  background: var(--white);
+  content: "";
+  pointer-events: none;
+}
 body {
   min-height: 100vh;
   min-height: 100dvh;
