@@ -36,13 +36,16 @@ button { color: inherit; }
 button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #111; outline-offset: 3px; }
 button:disabled { cursor: not-allowed; opacity: .55; }
 
-.app-shell { width: min(100%, var(--page-width)); margin: 0 auto; padding: env(safe-area-inset-top) 34px 0; }
+.app-shell { width: min(100%, var(--page-width)); margin: 0 auto; padding: env(safe-area-inset-top) 34px 0; background: var(--white); }
 .app-header {
   min-height: 78px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  background: var(--white);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-bottom: 1px solid var(--line);
 }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
@@ -291,7 +294,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 
 @media (max-width: 600px) {
   body { font-size: 16px; }
-  .app-shell { width: 100%; padding: 0 20px; }
+  .app-shell { width: 100%; padding: env(safe-area-inset-top) 20px 0; }
   .app-header { min-height: 70px; gap: 10px; }
   .brand { gap: 8px; }
   .brand-mark { width: 32px; height: 32px; }

@@ -362,8 +362,10 @@ function moodChart(records) {
   const bottom = 52;
   const plotWidth = width - left - right;
   const plotHeight = height - top - bottom;
+  const pointInset = 24;
+  const pointWidth = plotWidth - pointInset * 2;
   const lastIndex = Math.max(1, records.length - 1);
-  const x = (index) => left + (index / lastIndex) * plotWidth;
+  const x = (index) => left + pointInset + (index / lastIndex) * pointWidth;
   const y = (value) => top + ((10 - value) / 9) * plotHeight;
   const low = records.map((record, index) => `${x(index).toFixed(1)},${y(record.moodLow).toFixed(1)}`);
   const high = records.map((record, index) => `${x(index).toFixed(1)},${y(record.moodHigh).toFixed(1)}`);
@@ -398,8 +400,10 @@ function weightChart(records) {
   const upper = minValue + range;
   const plotWidth = width - left - right;
   const plotHeight = height - top - bottom;
+  const pointInset = 24;
+  const pointWidth = plotWidth - pointInset * 2;
   const lastIndex = Math.max(1, records.length - 1);
-  const x = (index) => left + (index / lastIndex) * plotWidth;
+  const x = (index) => left + pointInset + (index / lastIndex) * pointWidth;
   const y = (value) => top + ((upper - value) / range) * plotHeight;
   const points = records.map((record, index) => `${x(index).toFixed(1)},${y(Number(record.weightKg)).toFixed(1)}`);
   const path = points.map((point, index) => `${index ? "L" : "M"}${point}`).join(" ");
