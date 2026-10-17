@@ -747,7 +747,16 @@ async function start() {
     reportError(error);
     view.innerHTML = `<div class="empty-state"><h2>היומן לא נפתח</h2><p>בדקו שהדפדפן מאפשר אחסון מקומי, ונסו לטעון מחדש.</p></div>`;
   }
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch((error) => console.warn("Offline setup failed", error));
+  if ("serviceWorker" in navigator) {
+    const previousWorkerURL = navigator.serviceWorker.controller?.scriptURL;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      const currentWorkerURL = navigator.serviceWorker.controller?.scriptURL;
+      if (previousWorkerURL && currentWorkerURL !== previousWorkerURL) window.location.reload();
+    }, { once: true });
+    navigator.serviceWorker.register("./sw.js?v=14", { updateViaCache: "none" })
+      .then((registration) => registration.update())
+      .catch((error) => console.warn("Offline setup failed", error));
+  }
 }
 
 start();
