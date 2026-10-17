@@ -1,4 +1,4 @@
-const CACHE = "shura-bayom-v7";
+const CACHE = "shura-bayom-v8";
 const APP_FILES = [
   "./",
   "./index.html",
